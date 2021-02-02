@@ -62,7 +62,6 @@ void loop()
 
       delay(150);
     }
-    //TODO: Fix the delay at the beginning of the game, this will cause issues
     else if (redTeamLastPressTime == 0)
     {
       redTeamCount++;
@@ -98,7 +97,6 @@ void loop()
       Serial.println("[INFO] BLUE Team score added!");
       delay(150);
     }
-    //TODO: Fix the delay at the beginning of the game, this will cause issues
     else if (blueTeamLastPressTime == 0)
     {
       blueTeamCount++;

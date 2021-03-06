@@ -7,7 +7,7 @@
  * 
  */
 
-#include <LiquidCrystal.h>
+#include <UTFT.h>
 // Set button values
 const int redButton = 8, blueButton = 9, resetButton = 10;
 

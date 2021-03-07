@@ -7,7 +7,14 @@
  * 
  */
 
+#include <Arduino.h>
 #include <UTFT.h>
+
+static void teamAction(int team);
+static void resetAction();
+static void debugGame();
+static void displayUpdate();
+
 // Set button values
 const int redButton = 8, blueButton = 9, resetButton = 10;
 
@@ -21,11 +28,12 @@ unsigned long currentTime;
 // Team Delay vars
 unsigned long redTeamLastPressTime = 0, blueTeamLastPressTime = 0;
 
-// LCD pin vars
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+// Set font values for TFT screen
+extern uint8_t BigFont[];
+extern uint8_t SevenSegmentFont[];
 
-// Set LCD values
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// Set TFT Screen values
+UTFT myGLCD(ILI9486,38,39,40,41);
 
 /**
  * @brief Arduino setup for game input
@@ -36,8 +44,10 @@ void setup()
   // Sets baud rate to communicate to computer for any messages, used for debug
   Serial.begin(9600);
 
-  // Start up LCD screen
-  lcd.begin(16, 2);
+  // Start up TFT screen
+  myGLCD.InitLCD();
+  myGLCD.clrScr();
+  myGLCD.setFont(BigFont);
 
   // Set button modes
   pinMode(redButton, INPUT);
@@ -76,7 +86,7 @@ void loop()
   if (digitalRead(resetButton) == HIGH)
   {
     resetAction();
-    debug();
+    debugGame();
   }
 
   displayUpdate();
@@ -93,10 +103,10 @@ void loop()
 void displayUpdate()
 {
   // Main Scoreboard
-  lcd.setCursor(0, 0);
-  lcd.print("RED TEAM:  " + String(redTeamCount));
-  lcd.setCursor(0, 1);
-  lcd.print("BLUE TEAM: " + String(blueTeamCount));
+  //lcd.setCursor(0, 0);
+  //lcd.print("RED TEAM:  " + String(redTeamCount));
+  //lcd.setCursor(0, 1);
+  //lcd.print("BLUE TEAM: " + String(blueTeamCount));
 }
 
 /**
@@ -109,15 +119,15 @@ void displayUpdate()
 void resetAction()
 {
   // Clear scoreboard
-  lcd.clear();
+  //lcd.clear();
 
   // Set vars to zero (0)
   redTeamCount = 0;
   blueTeamCount = 0;
 
   // Output "RESET SCORES" to end user and serial bridge
-  lcd.setCursor(0, 0);
-  lcd.print("RESET SCORES");
+  //lcd.setCursor(0, 0);
+  //lcd.print("RESET SCORES");
   Serial.println("[INFO] Reset Scores!");
   delay(2500);
 }
@@ -188,7 +198,7 @@ void teamAction(int team)
     }
   }
   delay(150);
-  debug();
+  debugGame();
 }
 
 /**
@@ -198,7 +208,7 @@ void teamAction(int team)
  * pressed the button.
  * 
  */
-void debug()
+void debugGame()
 {
   Serial.println("[DEBUG] currentTime:" + String(currentTime));
   Serial.println("[DEBUG] redTeamLastPressTime:" + String(redTeamLastPressTime));

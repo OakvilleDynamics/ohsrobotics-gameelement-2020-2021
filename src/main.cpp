@@ -2,7 +2,7 @@
  * @file main.cpp
  * @author Garrett Summerfield (garrettsummerfi3ld@gmail.com)
  * @brief Button game element for 2020-2021 robotics competition
- * @version 0.1
+ * @version 0.2-mega
  * @date 2021-02-07
  * 
  */

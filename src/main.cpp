@@ -16,7 +16,7 @@ static void debugGame();
 static void displayUpdate();
 
 // Set button values
-const int redButton = 8, blueButton = 9, resetButton = 10;
+const int redButton = 8, blueButton = 9;
 
 // Scoring vars
 int redTeamCount = 0, blueTeamCount = 0;
@@ -32,8 +32,8 @@ unsigned long redTeamLastPressTime = 0, blueTeamLastPressTime = 0;
 extern uint8_t BigFont[];
 extern uint8_t SevenSegmentFont[];
 
-// Set TFT Screen values
-UTFT myGLCD(ILI9486,38,39,40,41);
+// Set TFT screen display
+UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 
 /**
  * @brief Arduino setup for game input
@@ -48,11 +48,13 @@ void setup()
   myGLCD.InitLCD();
   myGLCD.clrScr();
   myGLCD.setFont(BigFont);
+  myGLCD.fillScr(VGA_WHITE);
+  myGLCD.drawLine(myGLCD.getDisplayXSize() / 2, myGLCD.getDisplayYSize(), myGLCD.getDisplayXSize() / 2, 0);
+  myGLCD.setBackColor(VGA_BLACK);
 
   // Set button modes
   pinMode(redButton, INPUT);
   pinMode(blueButton, INPUT);
-  pinMode(resetButton, INPUT);
 
   Serial.println("[INFO] Started!");
 }
@@ -82,13 +84,6 @@ void loop()
     teamAction(blueButton);
   }
 
-  // Reset Score logic
-  if (digitalRead(resetButton) == HIGH)
-  {
-    resetAction();
-    debugGame();
-  }
-
   displayUpdate();
 }
 
@@ -102,34 +97,9 @@ void loop()
  */
 void displayUpdate()
 {
-  // Main Scoreboard
-  //lcd.setCursor(0, 0);
-  //lcd.print("RED TEAM:  " + String(redTeamCount));
-  //lcd.setCursor(0, 1);
-  //lcd.print("BLUE TEAM: " + String(blueTeamCount));
-}
-
-/**
- * @brief Reset action
- * 
- * Clears scoreboard display, sets all variables to zero, and outputs to the
- * user that the scoreboard reset.
- * 
- */
-void resetAction()
-{
-  // Clear scoreboard
-  //lcd.clear();
-
-  // Set vars to zero (0)
-  redTeamCount = 0;
-  blueTeamCount = 0;
-
-  // Output "RESET SCORES" to end user and serial bridge
-  //lcd.setCursor(0, 0);
-  //lcd.print("RESET SCORES");
-  Serial.println("[INFO] Reset Scores!");
-  delay(2500);
+  myGLCD.print("RED TEAM:   " + String(redTeamCount), 0, 0);
+  myGLCD.print("BLUE TEAM:  " + String(blueTeamCount), 0, 20);
+  myGLCD.print("GAME TIMER: " + String(currentTime), 0, 40);
 }
 
 /**

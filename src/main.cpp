@@ -2,7 +2,7 @@
  * @file main.cpp
  * @author Garrett Summerfield (garrettsummerfi3ld@gmail.com)
  * @brief Button game element for 2020-2021 robotics competition
- * @version 0.2-mega
+ * @version 1.0
  * @date 2021-02-07
  * 
  */
@@ -114,7 +114,7 @@ void displayUpdate()
  * 
  * The default delay is 10 seconds (10000ms) and is controlled by timerDelay
  * 
- * @param team 
+ * @param team Each team has a specific value to run the code specific for each team
  */
 void teamAction(int team)
 {
@@ -167,7 +167,6 @@ void teamAction(int team)
       Serial.println("[INFO] BLUE Team timer reset!");
     }
   }
-  delay(150);
   debugGame();
 }
 

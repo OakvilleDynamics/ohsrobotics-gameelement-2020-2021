@@ -2,33 +2,43 @@
  * @file main.cpp
  * @author Garrett Summerfield (garrettsummerfi3ld@gmail.com)
  * @brief Button game element for 2020-2021 robotics competition
- * @version 0.1
+ * @version 1.0
  * @date 2021-02-07
  * 
  */
 
-#include <LiquidCrystal.h>
-// Set button values
-const int redButton = 8, blueButton = 9, resetButton = 10;
+#include <Arduino.h>
+#include <UTFT.h>
 
-// Scoring vars
+static void teamAction(int team);
+static void resetAction();
+static void debugGame();
+static void displayUpdate();
+
+// Set button values to hardware pinouts
+const int redButton = 8, blueButton = 9;
+
+// Scoring vars, set to zero at start of game
 int redTeamCount = 0, blueTeamCount = 0;
 
-// Delay and time vars
-unsigned long timerDelay = 10000;
+// Delay and time vars, has a constant delay of 10 seconds and a variable to hold the time of the game
+const unsigned long timerDelay = 10000;
 unsigned long currentTime;
 
-// Team Delay vars
+// Team Delay vars, used to mark when the buttons have been pressed during time
 unsigned long redTeamLastPressTime = 0, blueTeamLastPressTime = 0;
 
-// LCD pin vars
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+// Set font values for TFT screen
+extern uint8_t BigFont[];
+extern uint8_t SevenSegmentFont[];
 
-// Set LCD values
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// Set TFT screen display
+UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 
 /**
  * @brief Arduino setup for game input
+ * 
+ * Sets up the display and buttons for inputs.
  * 
  */
 void setup()
@@ -36,13 +46,17 @@ void setup()
   // Sets baud rate to communicate to computer for any messages, used for debug
   Serial.begin(9600);
 
-  // Start up LCD screen
-  lcd.begin(16, 2);
+  // Start up TFT screen
+  myGLCD.InitLCD();
+  myGLCD.clrScr();
+  myGLCD.setFont(BigFont);
+  myGLCD.fillScr(VGA_WHITE);
+  myGLCD.drawLine(myGLCD.getDisplayXSize() / 2, myGLCD.getDisplayYSize(), myGLCD.getDisplayXSize() / 2, 0);
+  myGLCD.setBackColor(VGA_BLACK);
 
   // Set button modes
   pinMode(redButton, INPUT);
   pinMode(blueButton, INPUT);
-  pinMode(resetButton, INPUT);
 
   Serial.println("[INFO] Started!");
 }
@@ -72,13 +86,6 @@ void loop()
     teamAction(blueButton);
   }
 
-  // Reset Score logic
-  if (digitalRead(resetButton) == HIGH)
-  {
-    resetAction();
-    debug();
-  }
-
   displayUpdate();
 }
 
@@ -92,34 +99,9 @@ void loop()
  */
 void displayUpdate()
 {
-  // Main Scoreboard
-  lcd.setCursor(0, 0);
-  lcd.print("RED TEAM:  " + String(redTeamCount));
-  lcd.setCursor(0, 1);
-  lcd.print("BLUE TEAM: " + String(blueTeamCount));
-}
-
-/**
- * @brief Reset action
- * 
- * Clears scoreboard display, sets all variables to zero, and outputs to the
- * user that the scoreboard reset.
- * 
- */
-void resetAction()
-{
-  // Clear scoreboard
-  lcd.clear();
-
-  // Set vars to zero (0)
-  redTeamCount = 0;
-  blueTeamCount = 0;
-
-  // Output "RESET SCORES" to end user and serial bridge
-  lcd.setCursor(0, 0);
-  lcd.print("RESET SCORES");
-  Serial.println("[INFO] Reset Scores!");
-  delay(2500);
+  myGLCD.print("RED TEAM:   " + String(redTeamCount), 0, 0);
+  myGLCD.print("BLUE TEAM:  " + String(blueTeamCount), 0, 20);
+  myGLCD.print("GAME TIMER: " + String(currentTime), 0, 40);
 }
 
 /**
@@ -134,7 +116,7 @@ void resetAction()
  * 
  * The default delay is 10 seconds (10000ms) and is controlled by timerDelay
  * 
- * @param team 
+ * @param team Each team has a specific value to run the code specific for each team
  */
 void teamAction(int team)
 {
@@ -187,8 +169,7 @@ void teamAction(int team)
       Serial.println("[INFO] BLUE Team timer reset!");
     }
   }
-  delay(150);
-  debug();
+  debugGame();
 }
 
 /**
@@ -198,7 +179,7 @@ void teamAction(int team)
  * pressed the button.
  * 
  */
-void debug()
+void debugGame()
 {
   Serial.println("[DEBUG] currentTime:" + String(currentTime));
   Serial.println("[DEBUG] redTeamLastPressTime:" + String(redTeamLastPressTime));

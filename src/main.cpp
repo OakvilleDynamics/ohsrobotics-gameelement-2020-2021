@@ -15,17 +15,17 @@ static void resetAction();
 static void debugGame();
 static void displayUpdate();
 
-// Set button values
+// Set button values to hardware pinouts
 const int redButton = 8, blueButton = 9;
 
-// Scoring vars
+// Scoring vars, set to zero at start of game
 int redTeamCount = 0, blueTeamCount = 0;
 
-// Delay and time vars
-unsigned long timerDelay = 10000;
+// Delay and time vars, has a constant delay of 10 seconds and a variable to hold the time of the game
+const unsigned long timerDelay = 10000;
 unsigned long currentTime;
 
-// Team Delay vars
+// Team Delay vars, used to mark when the buttons have been pressed during time
 unsigned long redTeamLastPressTime = 0, blueTeamLastPressTime = 0;
 
 // Set font values for TFT screen
@@ -37,6 +37,8 @@ UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 
 /**
  * @brief Arduino setup for game input
+ * 
+ * Sets up the display and buttons for inputs.
  * 
  */
 void setup()

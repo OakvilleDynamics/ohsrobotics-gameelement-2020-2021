@@ -11,7 +11,6 @@
 #include <UTFT.h>
 
 static void teamAction(int team);
-static void resetAction();
 static void debugGame();
 static void displayUpdate();
 
@@ -102,6 +101,7 @@ void displayUpdate()
   myGLCD.print("RED TEAM:   " + String(redTeamCount), 0, 0);
   myGLCD.print("BLUE TEAM:  " + String(blueTeamCount), 0, 20);
   myGLCD.print("GAME TIMER: " + String(currentTime), 0, 40);
+  return;
 }
 
 /**
@@ -170,6 +170,7 @@ void teamAction(int team)
     }
   }
   debugGame();
+  return;
 }
 
 /**
@@ -184,4 +185,5 @@ void debugGame()
   Serial.println("[DEBUG] currentTime:" + String(currentTime));
   Serial.println("[DEBUG] redTeamLastPressTime:" + String(redTeamLastPressTime));
   Serial.println("[DEBUG] blueTeamLastPressTime:" + String(blueTeamLastPressTime));
+  return;
 }

@@ -29,7 +29,7 @@ unsigned long redTeamLastPressTime = 0, blueTeamLastPressTime = 0;
 
 // Set font values for TFT screen
 extern uint8_t BigFont[];
-extern uint8_t SevenSegNumFont[];
+extern uint8_t SevenSeg_XXXL_Num[];
 
 // Set TFT screen display
 UTFT myGLCD(ILI9486, 38, 39, 40, 41);
@@ -104,13 +104,12 @@ void displayUpdate()
   myGLCD.setColor(VGA_WHITE);
   myGLCD.print("RED TEAM:", 50, 25);
   myGLCD.print("BLUE TEAM:", 280, 25);
-  myGLCD.setFont(SevenSegNumFont);
+  myGLCD.setFont(SevenSeg_XXXL_Num);
   myGLCD.print(String(redTeamCount), 60, 80);
   myGLCD.print(String(blueTeamCount), 310, 80);
   myGLCD.setFont(BigFont);
-  myGLCD.print(String(redTeamLastPressTime), 50, 160);
-  myGLCD.print(String(blueTeamLastPressTime), 280, 160);
-  myGLCD.print("GAME TIMER: " + String(currentTime), 120, 305);
+
+  myGLCD.print("GAME TIMER: " + String(currentTime) + "ms", 120, 305);
   return;
 }
 
